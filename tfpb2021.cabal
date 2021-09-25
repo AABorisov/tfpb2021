@@ -15,8 +15,8 @@ maintainer:         astynax@users.noreply.github.com
 
 common deps
     default-language: Haskell2010
-    build-depends:    base ^>=4.14.3.0
+    build-depends:    base ^>=4.14.2.0
 
 executable tfpb2021
     import: deps
-    main-is:          Main.hs
+    main-is:          Lesson03.hs

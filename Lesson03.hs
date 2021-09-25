@@ -107,12 +107,12 @@ moves
   -> [(Pos, Pos)]
   -> Maybe (Color, Field)
 moves c f []     = Just (c, f)
-moves c f (m:ms) =
-  case (at2d (fst (fst m)) (snd (fst m)) f, move fst m snd m f) of
+moves c f ((p1@(x, y), p2):ms) =
+  case (at2d x y f, move p1 p2 f) of
     (Nothing, _) -> Nothing
     (_, Nothing) -> Nothing
-    (Just (c0, v0), Just f')
-      | c0 != c -> Nothing
+    (Just (c0, _), Just f')
+      | c0 /= c -> Nothing
       | otherwise ->
         moves (otherColor c) f' ms
   where
