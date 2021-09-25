@@ -87,6 +87,7 @@ map2d f x y = mapVec4 (mapVec4 f x) y
 
 set2d :: a -> D4 X -> D4 Y -> Vec2d a -> Vec2d a
 set2d = map2d . const
+-- const? .?
 
 data Piece
 
@@ -106,7 +107,18 @@ moves
   -> [(Pos, Pos)]
   -> Maybe (Color, Field)
 moves c f []     = Just (c, f)
-moves c f (m:ms) = error "TODO: implement me!"
+moves c f (m:ms) =
+  case (at2d (fst (fst m)) (snd (fst m)) f, move fst m snd m f) of
+    (Nothing, _) -> Nothing
+    (_, Nothing) -> Nothing
+    (Just (c0, v0), Just f')
+      | c0 != c -> Nothing
+      | otherwise ->
+        moves (otherColor c) f' ms
+  where
+    otherColor :: Color -> Color
+    otherColor Red = Blue
+    otherColor Blue = Red
 
 move :: Pos -> Pos -> Field -> Maybe Field
 move (x0, y0) (x1, y1) f
@@ -124,8 +136,8 @@ move (x0, y0) (x1, y1) f
           Nothing -> Nothing
       | otherwise ->
           jumpWith $ case fight v0 v1 of
-            Left v0' -> (c0, v0')
-            Right v1' ->(c1, v1')
+            Left v0'  -> (c0, v0')
+            Right v1' -> (c1, v1')
   where
     near v0 v1 =
       decD4 v0 == Just v1
